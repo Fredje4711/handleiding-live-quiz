@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handleiding: Live Diabetes Quiz Systeem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #23a9e4;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #23a9e4;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #495057;
+            font-size: 1.4em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        ol {
+            list-style-type: decimal;
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        strong {
+            font-weight: bold;
+        }
+        em {
+            font-style: italic;
+        }
+        .image-placeholder {
+            text-align: center;
+            margin: 30px 0;
+            padding: 15px;
+            border: 1px dashed #ccc;
+            background-color: #f0f0f0;
+            color: #666;
+            font-style: italic;
+            border-radius: 5px;
+        }
+        /* STANDAARD STIJL VOOR AFBEELDINGEN BINNEN PLACEHOLDER (Methode 1 - altijd van toepassing, tenzij overschreven) */
+        .image-placeholder img {
+            max-width: 100%; /* Zorgt ervoor dat afbeeldingen responsief zijn en niet buiten hun container treden */
+            height: auto;    /* Behoudt de aspectverhouding */
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ddd; /* Visuele rand voor de placeholder */
+        }
+
+        /* NIEUW: ADAPTIEVE BREEDTE VOOR DESKTOP (Optie 2) */
+        /* Deze stijl wordt ALLEEN toegepast op schermen die breder zijn dan 768px */
+        @media (min-width: 768px) {
+            .img-desktop-half-width {
+                max-width: 50%; /* Op desktop schalen we naar maximaal 50% van de containerbreedte */
+            }
+            /* NIEUWE SUB-OPTIE: VASTE PIXEL BREEDTE OP DESKTOP */
+            .img-desktop-fixed-width-377px { /* Voor afbeeldingen die exact 377px breed moeten zijn op desktop */
+                max-width: 377px; /* Dit zal de 100% overschrijven op desktop */
+            }
+            .img-desktop-fixed-width-300px { /* Voor afbeeldingen die exact 300px breed moeten zijn op desktop */
+                max-width: 300px;
+            }
+            .img-desktop-fixed-width-250px { /* NIEUW: Voor afbeeldingen die exact 250px breed moeten zijn op desktop */
+                max-width: 250px;
+            }
+            /* Voeg hier meer .img-desktop-fixed-width-XXXpx klassen toe naar behoefte */
+        }
+
+
+        /* OUDE KLASSEN VOOR VASTE PIXEL MAX-WIDTHS (Optie 3) - Indien nog gewenst */
+        /* Deze zijn ALGEMEEN en kunnen conflict geven met .img-desktop-half-width als ze op dezelfde img tag worden gebruikt. */
+        /* Ze zijn nuttiger als u een harde bovengrens wilt, ongeacht mobiel/desktop. */
+        .img-size-small { max-width: 300px; width: 100%; }
+        .img-size-medium { max-width: 500px; width: 100%; }
+        .img-size-large { max-width: 700px; width: 100%; }
+
+
+        .note {
+            background-color: #a0eaff;
+            border-left: 5px solid #23a9e4;
+            padding: 10px 15px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+        .analysis-section {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5gpx;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .analysis-summary p {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        .analysis-summary strong {
+            color: #23a9e4;
+        }
+        .analysis-summary .correct-count {
+            color: green;
+        }
+        .analysis-summary .incorrect-count {
+            color: red;
+        }
+        .top-list li {
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .top-list .incorrect-count-item {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #dc3545; /* Rode kleur voor het aantal deelnemers */
+        }
+        .top-list .percentage-item {
+            font-size: 0.9em;
+            color: #6c757d; /* Grijze kleur voor het percentage */
+        }
+        .top-list strong {
+            color: #333; /* Vraagtekst normaal */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Handleiding: Live Diabetes Quiz Systeem</h1>
+
+        <p>Welkom bij de handleiding voor de Live Diabetes Quiz! Dit systeem is ontworpen om op een interactieve en leuke manier de kennis over diabetes te testen. Deze quiz bestaat uit een Deelnemers en Quiz Master onderdeel, zijnde twee aparte weblinks (URL's) die via internetverbinding samen werken.</p>
+
+        <h2>Wat heeft u nodig?</h2>
+        <ul>
+            <li><strong>Voor de Quiz Master (Organisator):</strong>
+                <ul>
+                    <li>Een laptop of tablet met een stabiele internetverbinding.</li>
+                    <li>Een projectiescherm en een beamer (of een grote monitor) die u kunt koppelen aan uw laptop/tablet.</li>
+                    <li>De website links (URL's) voor het Quiz Master scherm en het Deelnemersscherm.</li>
+                    <li>Optioneel: Vooraf geprinte QR-codes voor het Deelnemersscherm en/of Wi-Fi verbinding.</li>
+                </ul>
+            </li>
+            <li><strong>Voor de Deelnemers (Publiek):</strong>
+                <ul>
+                    <li>Hun smartphone of tablet met internettoegang (Wi-Fi of 4G/mobiele data).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>Deel 1: Voorbereiding van de Quiz (Voor de Quiz Master)</h2>
+        <p>Voordat de quiz begint, zijn er enkele belangrijke stappen die de Quiz Master moet doorlopen.</p>
+
+        <h3>1.1 Scenario's voor Internetverbinding in de Zaal</h3>
+        <p>De manier waarop deelnemers verbinding maken, hangt af van de internetvoorzieningen in de zaal:</p>
+        <ul>
+            <li><strong>Scenario 1: Zaal met Wi-Fi:</strong>
+                <ul>
+                    <li>Your laptop/tablet (as Quiz Master) connects to the hall's Wi-Fi.</li>
+                    <li>Deelnemers kunnen ook verbinding maken met de zaal-Wi-Fi. Zorg dat ze de Wi-Fi-gegevens krijgen (bijv. via een papiertje met QR-code of handmatig).</li>
+                    <li><strong>Voordeel:</strong> Deelnemers verbruiken geen eigen mobiele data.</li>
+                </ul>
+            </li>
+            <li><strong>Scenario 2: Zaal zonder Wi-Fi (of Wi-Fi niet beschikbaar voor publiek):</strong>
+                <ul>
+                    <li>Your laptop/tablet (as Quiz Master) must have its own internet connection (e.g., via 4G hotspot on your phone, or built-in 4G capability).</li>
+                    <li>Alle deelnemers gebruiken hun eigen mobiele data (4G).</li>
+                    <li><strong>Voordeel:</strong> Geen afhankelijkheid van zaal-Wi-Fi, snellere opzet.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>1.2 De Deelnemers voorbereiden</h3>
+
+        <ol>
+            <li><strong>Zorg voor de juiste link:</strong> Zorg ervoor dat u de website link (URL) van het <strong>Deelnemersscherm</strong> bij de hand heeft.</li>
+            <li><strong>Verdeel de toegang:</strong>
+                <p>De meest efficiënte methode is om de deelnemers een eenvoudig **tweeledig briefje** te geven dat vooraf is voorbereid. Dit briefje kan ook op het projectiescherm worden getoond ter toelichting door de Quiz Master.</p>
+                <ul>
+                    <li><strong>Deel 1: Wi-Fi toegang (indien van toepassing)</strong>
+                        <p>Dit deel bevat een QR-code voor het Wi-Fi-netwerk van de zaal. Als het scannen niet lukt, staan de netwerknaam (SSID) en het wachtwoord eronder vermeld voor handmatige invoer.</p>
+                        <p><strong>Hoe te gebruiken:</strong> Scan de QR-code met de camera van uw telefoon of een QR-lezer-app. Uw telefoon zal dan vragen om verbinding te maken met het Wi-Fi-netwerk. Mocht dit niet werken, ga dan naar de Wi-Fi-instellingen van uw telefoon en voer de netwerknaam en het wachtwoord handmatig in.</p>
+                    </li>
+                    <li><strong>Deel 2: Deelnemersscherm link</strong>
+                        <p>Dit deel bevat een QR-code die direct naar de website van het Deelnemersscherm leidt. Voor het geval scannen niet mogelijk is, staat de volledige URL eronder vermeld.</p>
+                        <p><strong>Hoe te gebruiken:</strong> Scan de QR-code met de camera van uw telefoon of een QR-lezer-app. Uw telefoon zal de link herkennen en u vragen deze in uw webbrowser (bijv. Chrome, Safari) te openen. Als scannen niet lukt, open dan handmatig uw webbrowser en typ de volledige URL in de adresbalk.</p>
+                    </li>
+                </ul>
+                <p><strong>Belangrijke tip voor QR-codes (Android & iPhone):</strong> De meeste moderne smartphones kunnen QR-codes direct herkennen via hun standaard camera-app. Houd de camera stabiel gericht op de QR-code totdat er een melding of link verschijnt. U hoeft géén foto te maken. Er zijn geen significante verschillen in deze functionaliteit tussen Android- en iPhone-toestellen.</p>
+            </li>
+            <li><strong>Projecteer het Deelnemersscherm:</strong>
+                <ul>
+                    <li>Open de <strong>Deelnemersscherm URL</strong> op uw laptop/tablet.</li>
+                    <li>Sluit uw laptop/tablet aan op de beamer/projector.</li>
+                    <li>Zorg ervoor dat het Deelnemersscherm nu zichtbaar is voor alle aanwezigen in de zaal op het grote scherm. Dit scherm toont precies hetzelfde als wat de deelnemers op hun eigen telefoons zullen zien, maar dan op groot formaat. Dit is de primaire visuele feedback voor het publiek.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <div class="image-placeholder">
+            <p>Quiz Master Control in 'Niet Gestart' staat, met de "Reset Quiz" knop.</p>
+            <img src="Quiz Master Control 'Niet Gestart'.png" alt="Afbeelding 2: Quiz Master Control 'Niet Gestart'">
+        </div>
+
+        <ol start="3">
+            <li><strong>Maak uzelf bekend met het scherm:</strong>
+                <ul>
+                    <li><strong>Huidige Vraag:</strong> Toont welke vraag actief is.</li>
+                    <li><strong>Actieve Vraag:</strong> Hier verschijnt de vraag die u aan het publiek stelt, inclusief de antwoordopties en het juiste antwoord (only visible to you).</li>
+                    <li><strong>Live Resultaten (Huidige Vraag):</strong> Toont real-time de antwoorden die binnenkomen van de deelnemers voor de actieve vraag.</li>
+                    <li><strong>Bediening:</strong> Hier vindt u de knoppen om de quiz te starten, vragen vooruit of terug te gaan en de quiz te resetten.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>Deel 2: Deelname aan de Quiz (Voor Deelnemers)</h2>
+        <p>Als deelnemer volgt u deze stappen op uw eigen smartphone of tablet.</p>
+
+        <h3>2.1 Verbinding maken met de Quiz</h3>
+        <ol>
+            <li><strong>Verbind met de Quiz:</strong>
+                <p>Raadpleeg het tweeledige briefje dat de Quiz Master heeft verstrekt voor de juiste link.</p>
+                <ul>
+                    <li>Gebruik uw telefooncamera om de QR-code voor het **Deelnemersscherm** te scannen. Deze opent de quizpagina direct in uw webbrowser.</li>
+                    <li>Als het scannen niet lukt, of u wilt liever handmatig, typ dan de volledige website link (URL) van het Deelnemersscherm in de adresbalk van uw webbrowser (bijv. Chrome, Safari) en druk op Enter.</li>
+                    <li>*(Optioneel: Zorg indien nodig eerst voor Wi-Fi verbinding via het andere deel van het briefje.)*</li>
+                </ul>
+            </li>
+            <li><strong>Wachten op de Quiz Master:</strong>
+                <ul>
+                    <li>Nadat u de link heeft geopend, ziet u een scherm met de melding: "Wachten op de volgende vraag van de Quiz Master...".</li>
+                    <li>Dit betekent dat u succesvol verbonden bent en wacht tot de Quiz Master de quiz start of een nieuwe vraag activeert.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <!-- AFBEELDING 1 IS HIER VERPLAATST EN HET BERICHT IS AANGEPAST -->
+        <div class="image-placeholder">
+            <p><strong>Afbeelding 1:</strong> Het wachtscherm voor deelnemers na succesvolle verbinding, in afwachting van de Quiz Master.</p>
+            <!-- AANBEVOLEN OPLOSSING VOOR UW SPECIFIEKE AFBEELDING 1 (377x790px) op desktop: -->
+            <!-- De klasse 'img-desktop-fixed-width-300px' zal de afbeelding op desktops max 300px breed maken. -->
+            <!-- Op mobiel schaalt hij tot 100% van de schermbreedte (of zijn originele 377px indien kleiner dan 100%). -->
+            <!-- Als u deze nog kleiner wilt op desktop, kunt u '.img-desktop-fixed-width-250px' proberen of een inline stijl. -->
+            <img src="Wachetn op quiz master.jpg" alt="Afbeelding 1: Deelnemersscherm 'Wachten op Quiz Master'" class="img-desktop-fixed-width-300px">
+        </div>
+
+        <h3>2.2 De Quiz Spelen</h3>
+        <ol>
+            <li><strong>De Vraag verschijnt:</strong> De eerste vraag (en later de volgende vragen) verschijnen op uw scherm en op het grote projectiescherm in de zaal.</li>
+        </ol>
+        <div class="image-placeholder">
+            <p>Deelnemersscherm met een actieve vraag en antwoordknoppen (A, B, C, D).</p>
+            <img src="Deelnemersscherm vraag 1 onbeantwoord.jpg" alt="Afbeelding 4: Deelnemersscherm actieve vraag">
+        </div>
+        <ol start="2">
+            <li><strong>Kies je antwoord:</strong> Klik op de knop met het antwoord dat volgens u correct is (A, B, C of D).</li>
+            <li><strong>Directe Feedback:</strong>
+                <ul>
+                    <li><strong>Juist!</strong> Als u het juiste antwoord heeft gekozen, wordt uw gekozen knop groen en verschijnt de tekst "Juist!" onder de antwoorden.</li>
+                </ul>
+            </li>
+        </ol>
+        <div class="image-placeholder">
+            <p>Deelnemersscherm na een correct antwoord.</p>
+            <img src="Deelnemersscherm na een correct antwoord.png" alt="Afbeelding 5: Deelnemersscherm correct antwoord">
+        </div>
+        <ol start="3">
+            <li>
+                <ul>
+                    <li><strong>Fout!</strong> Als u het verkeerde antwoord heeft gekozen, wordt uw gekozen knop rood en wordt de juiste antwoordknop groen. Er verschijnt ook de tekst: "Fout! Het juiste antwoord was: [Correct Antwoord]".</li>
+                </ul>
+            </li>
+        </ol>
+        <div class="image-placeholder">
+            <p>Deelnemersscherm na een fout antwoord.</p>
+            <img src="Deelnemersscherm na een fout antwoord.png" alt="Afbeelding 6: Deelnemersscherm fout antwoord">
+        </div>
+        <ol start="4">
+            <li><strong>Live Resultaten (zie onderste deel van Afbeelding hierboven):</strong>
+                <p>Onderaan uw scherm ziet u de live tellingen van alle antwoorden die door <strong>alle deelnemers</strong> zijn gegeven op de <strong>huidige vraag</strong>. Dit onderste deel is bij iedere deelnemer hetzelfde.</p>
+                <ul>
+                    <li>U ziet hoeveel deelnemers antwoord A, B, C of D hebben gekozen.</li>
+                    <li>U ziet ook het totale aantal gegeven antwoorden, hoeveel daarvan juist en hoeveel fout waren.</li>
+                </ul>
+                <p>Dit geeft u een idee van hoe de rest van de groep presteert op die specifieke vraag.</p>
+                <div class="note" style="font-style: normal;">
+                    <strong>Voorbeeld van de tellingen (zichtbaar voor deelnemers):</strong>
+                    <p>Stel, u ziet in deze live telling (zoals in Afbeelding hierboven, onderaan) de volgende cijfers, uitgaande van 30 deelnemers die allemaal hebben geantwoord:</p>
+                    <ul>
+                        <li>Totaal: <strong>30</strong></li>
+                        <li>Juist: <strong>20</strong> (bijvoorbeeld, als antwoord B correct was, staat er bijv. "B: 20")</li>
+                        <li>Fout: <strong>10</strong> (deze 10 foute antwoorden zijn verdeeld over de andere opties, bijv. "A: 9" en "C: 1")</li>
+                    </ul>
+                    <p><em>(Let op: Hoewel deze gedetailleerde verdeling voor u als deelnemer zichtbaar is, is de interpretatie van waarom 'A' zo vaak gekozen werd meer relevant voor de Quiz Master.)</em></p>
+                </div>
+            </li>
+        </ol>
+
+        <h3>2.3 Einde van de Quiz (Jouw Persoonlijke Resultaten)</h3>
+        <ol>
+            <li><strong>Quiz voltooid:</strong> Nadat de laatste vraag (Vraag 50) is behandeld, ziet u direct uw persoonlijke score.</li>
+            <li>En een overzicht van alle vragen die u <strong>fout heeft beantwoord</strong>. Per vraag ziet u de vraagtekst, wat uw gegeven antwoord was en wat het juiste antwoord was.</li>
+        </ol>
+        <div class="image-placeholder">
+            <p>Deelnemersscherm met score en overzicht foute antwoorden.</p>
+            <img src="Deelnemersscherm eindscore_2.png" alt="Afbeelding 8: Deelnemersscherm met score en overzicht foute antwoorden">
+        </div>
+
+        <h1>Deel 3 Einde van de Quiz: Eindanalyse (Quiz Master)</h1>
+        
+        <p><strong>Laatste Vraag:</strong> Nadat u door de laatste vraag (Vraag 50) bent gegaan, verandert de "Volgende Vraag" knop in "Quiz Afgelopen", klik hierop.</p>
+	    <p><strong>Eindanalyse genereren:</strong> Klik op <strong>"Toon Eindanalyse"</strong> om de totaalanalyse te genereren. Deze wordt op uw scherm getoond en is klaar om geprojecteerd te worden voor het publiek.</p>
+        
+        <div class="analysis-section">
+            <p>Het complete Quiz Master Eindanalyse scherm.</p>
+            <img src="Quiz Master Eindanalyse.png" alt="Afbeelding 11: Quiz Master Eindanalyse">
+        </div>
+
+        <h2>Afsluiting</h2>
+        <p>Wij hopen dat deze handleiding u helpt om de Live Diabetes Quiz succesvol te gebruiken. Mocht u nog vragen hebben, neem dan contact op met de Diabetes Liga Midden-Limburg.</p>
+        <p>Bedankt voor uw deelname en veel plezier met de quiz!</p>
+
+    </div>
+
+</body>
+</html>
