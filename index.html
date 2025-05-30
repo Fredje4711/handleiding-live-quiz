@@ -74,36 +74,22 @@
         }
         /* STANDAARD STIJL VOOR AFBEELDINGEN BINNEN PLACEHOLDER (Methode 1 - altijd van toepassing, tenzij overschreven) */
         .image-placeholder img {
-            max-width: 100%; /* Zorgt ervoor dat afbeeldingen responsief zijn en niet buiten hun container treden */
-            height: auto;    /* Behoudt de aspectverhouding */
+            max-width: 100%;
+            height: auto;
             display: block;
             margin: 0 auto;
-            border: 1px solid #ddd; /* Visuele rand voor de placeholder */
+            border: 1px solid #ddd;
         }
 
         /* NIEUW: ADAPTIEVE BREEDTE VOOR DESKTOP (Optie 2) */
-        /* Deze stijl wordt ALLEEN toegepast op schermen die breder zijn dan 768px */
         @media (min-width: 768px) {
-            .img-desktop-half-width {
-                max-width: 50%; /* Op desktop schalen we naar maximaal 50% van de containerbreedte */
-            }
-            /* NIEUWE SUB-OPTIE: VASTE PIXEL BREEDTE OP DESKTOP */
-            .img-desktop-fixed-width-377px { /* Voor afbeeldingen die exact 377px breed moeten zijn op desktop */
-                max-width: 377px; /* Dit zal de 100% overschrijven op desktop */
-            }
-            .img-desktop-fixed-width-300px { /* Voor afbeeldingen die exact 300px breed moeten zijn op desktop */
-                max-width: 300px;
-            }
-            .img-desktop-fixed-width-250px { /* NIEUW: Voor afbeeldingen die exact 250px breed moeten zijn op desktop */
-                max-width: 250px;
-            }
-            /* Voeg hier meer .img-desktop-fixed-width-XXXpx klassen toe naar behoefte */
+            .img-desktop-half-width { max-width: 50%; }
+            .img-desktop-fixed-width-377px { max-width: 377px; }
+            .img-desktop-fixed-width-300px { max-width: 300px; }
+            .img-desktop-fixed-width-250px { max-width: 250px; }
         }
 
-
-        /* OUDE KLASSEN VOOR VASTE PIXEL MAX-WIDTHS (Optie 3) - Indien nog gewenst */
-        /* Deze zijn ALGEMEEN en kunnen conflict geven met .img-desktop-half-width als ze op dezelfde img tag worden gebruikt. */
-        /* Ze zijn nuttiger als u een harde bovengrens wilt, ongeacht mobiel/desktop. */
+        /* OUDE KLASSEN VOOR VASTE PIXEL MAX-WIDTHS (Optie 3) */
         .img-size-small { max-width: 300px; width: 100%; }
         .img-size-medium { max-width: 500px; width: 100%; }
         .img-size-large { max-width: 700px; width: 100%; }
@@ -119,7 +105,7 @@
         .analysis-section {
             background-color: #f8f9fa;
             border: 1px solid #ddd;
-            border-radius: 5gpx;
+            border-radius: 5px; /* corrected typo from 5gpx */
             padding: 20px;
             margin-top: 30px;
         }
@@ -143,14 +129,115 @@
         .top-list .incorrect-count-item {
             font-weight: bold;
             font-size: 1.1em;
-            color: #dc3545; /* Rode kleur voor het aantal deelnemers */
+            color: #dc3545;
         }
         .top-list .percentage-item {
             font-size: 0.9em;
-            color: #6c757d; /* Grijze kleur voor het percentage */
+            color: #6c757d;
         }
         .top-list strong {
-            color: #333; /* Vraagtekst normaal */
+            color: #333;
+        }
+
+        /* ========================================================== */
+        /* =============== PRINT-SPECIFIEKE STIJLEN ================= */
+        /* ========================================================== */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+                font-size: 9.5pt; /* Nog iets kleinere basis font-size voor meer content per pagina */
+            }
+            .container {
+                box-shadow: none;
+                padding: 15mm 10mm; /* Aangepaste padding voor printmarges */
+                margin: 0;
+                max-width: none;
+            }
+            h1, h2, h3 {
+                border-bottom: none;
+                padding-bottom: 4px;
+                margin-top: 15px; /* Meer marge boven koppen voor betere scheiding */
+                margin-bottom: 4px;
+            }
+            h1 {
+                text-align: center;
+                page-break-before: always;
+            }
+            h2 {
+                page-break-before: always; /* Zorg ervoor dat grote secties op een nieuwe pagina beginnen */
+                page-break-after: avoid;
+                orphans: 3;
+                widows: 3;
+            }
+            h3 {
+                page-break-after: avoid;
+                orphans: 3;
+                widows: 3;
+            }
+            p, ul, ol {
+                margin-bottom: 1px; /* Zeer weinig marge onder paragrafen/lijsten */
+                margin-top: 1px;    /* Zeer weinig marge boven paragrafen/lijsten */
+                orphans: 2;
+                widows: 2;
+                line-height: 1.2; /* Compactere regelafstand in print */
+            }
+            li {
+                margin-bottom: 0px; /* Geen marge onder lijstitems */
+            }
+            div { /* Algemene regel voor alle divs in print, voorkom breuken */
+                page-break-inside: avoid;
+            }
+
+            .image-placeholder {
+                page-break-inside: avoid !important; /* Absolute prioriteit om niet te breken */
+                -webkit-column-break-inside: avoid !important;
+                break-inside: avoid !important;
+
+                margin: 5px auto !important; /* Minder marge, maar centraal */
+                padding: 5px !important;  /* Minder padding in print */
+                border: none;
+                background-color: transparent;
+                color: #000;
+
+                /* Dwing de afbeeldingen naar een nieuwe pagina als er niet genoeg ruimte is */
+                page-break-before: auto; /* Laat de browser bepalen of hij op een nieuwe pagina begint */
+            }
+            .image-placeholder img {
+                /* Standaard agressieve verkleining voor print (voor de meeste afbeeldingen) */
+                max-width: 45% !important;   /* Standaard afbeeldingen op 45% breedte */
+                max-height: 70vh !important; /* Standaard afbeeldingen max 70% paginahoogte */
+                width: auto !important;
+                display: block;
+                margin: 0 auto !important;
+            }
+            /* Specifieke grotere grootte voor Afbeelding 1, Afbeelding 2 en Afbeelding 8 in print */
+            .img-print-larger {
+                max-width: 80% !important;   /* Deze afbeeldingen significant groter */
+                max-height: 90vh !important; /* Deze afbeeldingen significant hoger */
+            }
+            .image-placeholder p {
+                page-break-after: avoid !important;
+                margin-bottom: 5px !important;
+            }
+            .note {
+                background-color: #f8f9fa;
+                border: 1px solid #eee;
+                border-left: 5px solid #23a9e4; /* Behoud de blauwe balk van de note */
+                font-style: normal;
+                margin: 8px 0;
+                padding: 6px 10px;
+                page-break-inside: avoid;
+            }
+            /* Verberg de 'Tip voor Afbeeldingsgrootte' in print omdat deze niet relevant is voor de PDF zelf */
+            .note:first-of-type {
+                display: none;
+            }
+            /* Corrigeer de positie van de laatste note als het de enige inhoud is in de analysis-section in print */
+            .analysis-section .note {
+                margin-top: 5mm !important;
+                margin-bottom: 5mm !important;
+            }
         }
     </style>
 </head>
@@ -159,7 +246,7 @@
     <div class="container">
         <h1>Handleiding: Live Diabetes Quiz Systeem</h1>
 
-        <p>Welkom bij de handleiding voor de Live Diabetes Quiz! Dit systeem is ontworpen om op een interactieve en leuke manier de kennis over diabetes te testen. Deze quiz bestaat uit een Deelnemers en Quiz Master onderdeel, zijnde twee aparte weblinks (URL's) die via internetverbinding samen werken.</p>
+        <p>Welkom bij de handleiding voor de Live Diabetes Quiz! Dit systeem is ontworpen om op een interactieve en leuke manier de kennis over diabetes te testen. De quiz bestaat uit twee onderdelen: een Deelnemersgedeelte en een Quizmastergedeelte, elk met een aparte weblink (URL), die via een internetverbinding samenwerken.</p>
 
         <h2>Wat heeft u nodig?</h2>
         <ul>
@@ -186,14 +273,14 @@
         <ul>
             <li><strong>Scenario 1: Zaal met Wi-Fi:</strong>
                 <ul>
-                    <li>Your laptop/tablet (as Quiz Master) connects to the hall's Wi-Fi.</li>
+                    <li>Je laptop/tablet (als Quizmaster) maakt verbinding met de wifi van de zaal.</li>
                     <li>Deelnemers kunnen ook verbinding maken met de zaal-Wi-Fi. Zorg dat ze de Wi-Fi-gegevens krijgen (bijv. via een papiertje met QR-code of handmatig).</li>
                     <li><strong>Voordeel:</strong> Deelnemers verbruiken geen eigen mobiele data.</li>
                 </ul>
             </li>
             <li><strong>Scenario 2: Zaal zonder Wi-Fi (of Wi-Fi niet beschikbaar voor publiek):</strong>
                 <ul>
-                    <li>Your laptop/tablet (as Quiz Master) must have its own internet connection (e.g., via 4G hotspot on your phone, or built-in 4G capability).</li>
+                    <li>Je laptop/tablet (als Quizmaster) moet beschikken over een eigen internetverbinding (bijvoorbeeld via een 4G-hotspot op je telefoon of ingebouwde 4G-functionaliteit).</li>
                     <li>Alle deelnemers gebruiken hun eigen mobiele data (4G).</li>
                     <li><strong>Voordeel:</strong> Geen afhankelijkheid van zaal-Wi-Fi, snellere opzet.</li>
                 </ul>
@@ -229,10 +316,10 @@
 
         <div class="image-placeholder">
             <p>Quiz Master Control in 'Niet Gestart' staat, met de "Reset Quiz" knop.</p>
-            <img src="Quiz Master Control 'Niet Gestart'.png" alt="Afbeelding 2: Quiz Master Control 'Niet Gestart'">
+			<img src="Quiz Master Control 'Niet Gestart'.png" alt="Afbeelding 2: Quiz Master Control 'Niet Gestart'"class="img-print-larger">
         </div>
 
-        <ol start="3">
+        <ol start="4">
             <li><strong>Maak uzelf bekend met het scherm:</strong>
                 <ul>
                     <li><strong>Huidige Vraag:</strong> Toont welke vraag actief is.</li>
@@ -266,12 +353,12 @@
 
         <!-- AFBEELDING 1 IS HIER VERPLAATST EN HET BERICHT IS AANGEPAST -->
         <div class="image-placeholder">
-            <p><strong>Afbeelding 1:</strong> Het wachtscherm voor deelnemers na succesvolle verbinding, in afwachting van de Quiz Master.</p>
+            <p>Het wachtscherm voor deelnemers na succesvolle verbinding, in afwachting van de Quiz Master.</p>
             <!-- AANBEVOLEN OPLOSSING VOOR UW SPECIFIEKE AFBEELDING 1 (377x790px) op desktop: -->
             <!-- De klasse 'img-desktop-fixed-width-300px' zal de afbeelding op desktops max 300px breed maken. -->
             <!-- Op mobiel schaalt hij tot 100% van de schermbreedte (of zijn originele 377px indien kleiner dan 100%). -->
             <!-- Als u deze nog kleiner wilt op desktop, kunt u '.img-desktop-fixed-width-250px' proberen of een inline stijl. -->
-            <img src="Wachetn op quiz master.jpg" alt="Afbeelding 1: Deelnemersscherm 'Wachten op Quiz Master'" class="img-desktop-fixed-width-300px">
+            <img src="Wachetn op quiz master.jpg" alt="Deelnemersscherm 'Wachten op Quiz Master'" class="img-desktop-fixed-width-300px img-print-larger">
         </div>
 
         <h3>2.2 De Quiz Spelen</h3>
@@ -280,7 +367,7 @@
         </ol>
         <div class="image-placeholder">
             <p>Deelnemersscherm met een actieve vraag en antwoordknoppen (A, B, C, D).</p>
-            <img src="Deelnemersscherm vraag 1 onbeantwoord.jpg" alt="Afbeelding 4: Deelnemersscherm actieve vraag">
+            <img src="Deelnemersscherm vraag 1 onbeantwoord.jpg" alt="Deelnemersscherm actieve vraag">
         </div>
         <ol start="2">
             <li><strong>Kies je antwoord:</strong> Klik op de knop met het antwoord dat volgens u correct is (A, B, C of D).</li>
@@ -292,10 +379,10 @@
         </ol>
         <div class="image-placeholder">
             <p>Deelnemersscherm na een correct antwoord.</p>
-            <img src="Deelnemersscherm na een correct antwoord.png" alt="Afbeelding 5: Deelnemersscherm correct antwoord">
+            <img src="Deelnemersscherm na een correct antwoord.png" alt="Deelnemersscherm correct antwoord">
         </div>
-        <ol start="3">
-            <li>
+        <ol start="4">
+            <li><strong>Directe Feedback:</strong>        
                 <ul>
                     <li><strong>Fout!</strong> Als u het verkeerde antwoord heeft gekozen, wordt uw gekozen knop rood en wordt de juiste antwoordknop groen. Er verschijnt ook de tekst: "Fout! Het juiste antwoord was: [Correct Antwoord]".</li>
                 </ul>
@@ -303,9 +390,9 @@
         </ol>
         <div class="image-placeholder">
             <p>Deelnemersscherm na een fout antwoord.</p>
-            <img src="Deelnemersscherm na een fout antwoord.png" alt="Afbeelding 6: Deelnemersscherm fout antwoord">
+            <img src="Deelnemersscherm na een fout antwoord.png" alt="Deelnemersscherm fout antwoord">
         </div>
-        <ol start="4">
+        <ol start="5">
             <li><strong>Live Resultaten (zie onderste deel van Afbeelding hierboven):</strong>
                 <p>Onderaan uw scherm ziet u de live tellingen van alle antwoorden die door <strong>alle deelnemers</strong> zijn gegeven op de <strong>huidige vraag</strong>. Dit onderste deel is bij iedere deelnemer hetzelfde.</p>
                 <ul>
@@ -321,7 +408,7 @@
                         <li>Juist: <strong>20</strong> (bijvoorbeeld, als antwoord B correct was, staat er bijv. "B: 20")</li>
                         <li>Fout: <strong>10</strong> (deze 10 foute antwoorden zijn verdeeld over de andere opties, bijv. "A: 9" en "C: 1")</li>
                     </ul>
-                    <p><em>(Let op: Hoewel deze gedetailleerde verdeling voor u als deelnemer zichtbaar is, is de interpretatie van waarom 'A' zo vaak gekozen werd meer relevant voor de Quiz Master.)</em></p>
+                    <p><em>(Let op: Hoewel deze gedetailleerde verdeling voor u als deelnemer zichtbaar is, is de diepere interpretatie van waarom 'A' of 'C' zo vaak gekozen werd meer relevant voor de Quiz Master.)</em></p>
                 </div>
             </li>
         </ol>
@@ -333,7 +420,7 @@
         </ol>
         <div class="image-placeholder">
             <p>Deelnemersscherm met score en overzicht foute antwoorden.</p>
-            <img src="Deelnemersscherm eindscore_2.png" alt="Afbeelding 8: Deelnemersscherm met score en overzicht foute antwoorden">
+            <img src="Deelnemersscherm eindscore_2.png" alt="Deelnemersscherm met score en overzicht foute antwoorden"class="img-print-larger">
         </div>
 
         <h1>Deel 3 Einde van de Quiz: Eindanalyse (Quiz Master)</h1>
@@ -343,19 +430,19 @@
         
         <div class="analysis-section">
             <p>Het complete Quiz Master Eindanalyse scherm.</p>
-            <img src="Quiz Master Eindanalyse.png" alt="Afbeelding 11: Quiz Master Eindanalyse">
+            <img src="Quiz Master Eindanalyse.png" alt="Quiz Master Eindanalyse">
         </div>
 		
 		            <div class="note" style="font-style: normal;">
                 <strong>Interpretatie van Live Resultaten (voor de Quiz Master):</strong>
-                <p>De live tellingen (zoals getoond bij de deelnemer in Afbeelding 6) geven u als Quiz Master waardevolle inzichten per vraag. U ziet niet alleen het totale aantal juiste en foute antwoorden, maar ook hoe de antwoorden verdeeld zijn over de opties A, B, C en D.</p>
+                <p>De live resultaten tellingen geven u als Quiz Master waardevolle inzichten per vraag. U ziet niet alleen het totale aantal juiste en foute antwoorden, maar ook hoe de antwoorden verdeeld zijn over de opties A, B, C en D.</p>
                 <p>Als een significant deel van de foute antwoorden geconcentreerd is op één specifieke foute antwoordoptie (bijv. veel deelnemers kozen 'A' terwijl 'B' juist was), kan dit duiden op een algemeen misverstand of een veelvoorkomende valkuil in de vraag of antwoordopties. Dit is een uitstekend moment om:
                 <ul>
                     <li>De reden achter de veelgekozen foute optie te bespreken.</li>
                     <li>Extra toelichting te geven op het onderwerp van de vraag.</li>
-                    <li>Eventuele ambiguïteit in de vraagstelling te verhelderen voor de groep.</li>
+                    <li>Eventuele onduidelijkheid in de vraagstelling te verhelderen voor de groep.</li>
                 </ul>
-                <p>Een bijkomende controle tip is om naar het <strong>"Totaal"</strong> aantal antwoorden te kijken. Als het totaal gelijk is aan het aantal aanwezige deelnemers, dan weet u dat iedereen al heeft geantwoord en kunt u eventueel door naar de volgende vraag.</p>
+                <p><strong>Een bijkomende controle tip is om naar het "Totaal" aantal antwoorden te kijken. Als het totaal gelijk is aan het aantal aanwezige deelnemers, dan weet u dat iedereen al heeft geantwoord en kunt u eventueel door naar de volgende vraag.</strong></p>
             </div>
 
         <h2>Afsluiting</h2>
