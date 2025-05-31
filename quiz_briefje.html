@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quizbriefje met QR-codes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+
+    .form-section {
+      margin-bottom: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="file"],
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #23a9e4;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .print-area {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .handout {
+      width: 48%;
+      background: white;
+      padding: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+    }
+
+    h2 {
+      font-size: 1.1em;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 3px;
+      margin: 12px 0 8px;
+      color: #23a9e4;
+    }
+
+    .qr-section {
+      text-align: center;
+      margin: 10px 0 15px 0;
+    }
+
+    .qr-section img {
+      width: 135px;
+      height: 135px;
+      object-fit: contain;
+      border: 1px solid #999;
+      display: block;
+      margin: 8px auto;
+    }
+
+    .qr-section p {
+      margin: 3px 0;
+      font-size: 0.9em;
+    }
+
+    .left-align {
+      text-align: left;
+      padding-left: 65px;
+    }
+
+    .tips-section {
+      background-color: #f0f8ff;
+      border: 1px dashed #23a9e4;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      margin-top: 10px;
+    }
+
+    .tips-section ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.75em;
+      margin-top: 10px;
+      color: #23a9e4;
+    }
+
+    .footer a {
+      font-weight: bold;
+      color: #23a9e4;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+
+      .form-section,
+      button {
+        display: none;
+      }
+
+      .print-area {
+        flex-wrap: nowrap;
+      }
+
+      .handout {
+        width: 49%;
+        border: none;
+        box-shadow: none;
+        padding: 6mm;
+      }
+		.divider {
+  display: none;
+}
+
+@media print {
+  .print-area {
+    position: relative;
+  }
+
+  .divider {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    border-left: 1px dashed #999;
+    z-index: 0;
+  }
+}
+
+</style>
+</head>
+<body>
+
+  <div class="form-section">
+    <h2>QR Briefje aanmaken</h2>
+
+    <label>Wi-Fi QR-code uploaden:</label>
+    <input type="file" id="wifiQrInput" accept="image/*" />
+    <label>Naam Wi-Fi:</label>
+    <input type="text" id="wifiName" placeholder="bv. DLML-Netwerk" />
+    <label>Wachtwoord:</label>
+    <input type="text" id="wifiPassword" placeholder="bv. quiz2025" />
+
+    <label>Quiz QR-code uploaden:</label>
+    <input type="file" id="quizQrInput" accept="image/*" />
+    <label>Quiz URL:</label>
+    <input type="text" id="quizUrl" placeholder="bv. https://quiz.example.com" />
+
+    <button onclick="generateHandouts()">Afdrukvoorbeeld tonen</button>
+    <button onclick="window.print()">Afdrukken</button>
+  </div>
+
+	<div class="print-area" id="printArea">
+  <div class="handout" id="handout1"></div>
+  <div class="divider"></div>
+  <div class="handout" id="handout2"></div>
+</div>
+
+  <script>
+    function generateHandouts() {
+      const wifiName = document.getElementById("wifiName").value || "[NAAM WI-FI]";
+      const wifiPassword = document.getElementById("wifiPassword").value || "[WACHTWOORD]";
+      const quizUrl = document.getElementById("quizUrl").value || "[QUIZ URL HIER]";
+
+      const wifiFile = document.getElementById("wifiQrInput").files[0];
+      const quizFile = document.getElementById("quizQrInput").files[0];
+
+      if (!wifiFile || !quizFile) {
+        alert("Gelieve beide QR-code afbeeldingen te uploaden.");
+        return;
+      }
+
+      const wifiReader = new FileReader();
+      const quizReader = new FileReader();
+
+      wifiReader.onload = function () {
+        const wifiSrc = wifiReader.result;
+        quizReader.onload = function () {
+          const quizSrc = quizReader.result;
+
+          const content = `
+            <h2>DEEL 1: VERBIND MET WI-FI</h2>
+            <div class="qr-section">
+              <p><strong>Scan deze code om verbinding te maken met het Wi-Fi-netwerk:</strong></p>
+              <img src="${wifiSrc}" alt="Wi-Fi QR-code" />
+              <p><strong>Of voer handmatig in:</strong></p>
+              <p>Naam: <strong>${wifiName}</strong> &nbsp;&nbsp;|&nbsp;&nbsp; Wachtwoord: <strong>${wifiPassword}</strong></p>
+            </div>
+
+            <h2>DEEL 2: START DE QUIZ</h2>
+            <div class="qr-section">
+              <p><strong>Scan deze code om de quiz te openen in uw browser:</strong></p>
+              <img src="${quizSrc}" alt="Quiz QR-code" />
+              <p><strong>Of voer handmatig in:</strong></p>
+              <p class="left-align">URL: <strong>${quizUrl}</strong></p>
+            </div>
+
+            <div class="tips-section">
+              <h3>BELANGRIJKE TIPS</h3>
+              <ul>
+                <li><strong>Camera voor QR:</strong> Gebruik de standaard camera-app van uw telefoon. Houd de camera stil gericht totdat er een link of melding verschijnt. U hoeft geen foto te maken.</li>
+                <li><strong>Geen Wi-Fi?</strong> Gebruik dan uw eigen mobiele data (4G/5G).</li>
+                <li><strong>Wachtscherm:</strong> Zodra de quizpagina opent, ziet u een wachtscherm. De Quiz Master start de quiz!</li>
+              </ul>
+            </div>
+
+            <div class="footer">
+              Aangeboden door: Diabetes Liga Midden-Limburg | 
+              <a href="https://www.dlml.be" target="_blank"><strong>www.dlml.be</strong></a>
+            </div>
+          `;
+
+          document.getElementById("handout1").innerHTML = content;
+          document.getElementById("handout2").innerHTML = content;
+        };
+        quizReader.readAsDataURL(quizFile);
+      };
+      wifiReader.readAsDataURL(wifiFile);
+    }
+  </script>
+</body>
+</html>
