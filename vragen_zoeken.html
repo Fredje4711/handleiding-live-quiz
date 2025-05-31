@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Vragen Zoeker (Diabetes Quiz)</title>
+    <style>
+        /* Basisstijlen voor schermweergave */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 5px auto;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #23a9e4;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 2em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #23a9e4;
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 1.5em;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 0px;
+        }
+        /* Zoeksectie styling */
+        .search-section {
+            text-align: center;
+            margin-bottom: 5px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f0f8ff;
+        }
+        .search-section label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        .search-section input[type="number"] {
+            padding: 10px;
+            border: 1px solid #23a9e4;
+            border-radius: 4px;
+            width: 80px;
+            text-align: center;
+            font-size: 1.1em;
+            margin-right: 10px;
+        }
+        .search-section button {
+            padding: 10px 20px;
+            background-color: #23a9e4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.2s;
+        }
+        .search-section button:hover {
+            background-color: #1a8cd1;
+        }
+        /* Specifieke vraagweergave */
+        #specific-question-display {
+            margin-top: 5px;
+            text-align: left;
+            padding: 5px;
+            border: 1px solid #cceeff;
+            border-radius: 5px;
+            background-color: #e6f7ff;
+            min-height:100px; /* Zorgt voor wat ruimte als er geen vraag geselecteerd is */
+        }
+        #specific-question-display .question-item {
+            margin-bottom: 15px;
+        }
+        #specific-question-display .question-item .question-text {
+            font-weight: bold;
+            color: #23a9e4;
+            font-size: 1.15em;
+            margin-bottom: 0px;
+            display: block;
+        }
+        #specific-question-display .question-item ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0px;
+            font-size: 0.95em;
+        }
+        #specific-question-display .question-item ul li {
+            margin-bottom: 0px;
+            padding-left: 20px;
+            position: relative;
+        }
+        #specific-question-display .question-item ul li::before {
+            content: attr(data-answer-letter) ". ";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #495057;
+        }
+        #specific-question-display .question-item ul li .correct-indicator {
+            font-weight: bold;
+            color: green;
+            margin-left: 5px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #eee;
+            margin: 10px 0;
+        }
+
+        /* Styling voor de volledige lijst (hergebruikt van vorige versie) */
+        .full-list-section ol {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .full-list-section ol li {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 15px;
+        }
+        .full-list-section ol li .question-text {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+        .full-list-section ol li ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 8px;
+            font-size: 0.95em;
+        }
+        .full-list-section ol li ul li {
+            margin-bottom: 4px;
+            padding-left: 25px;
+            position: relative;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .full-list-section ol li ul li::before {
+            content: attr(data-answer-letter) ". ";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #495057;
+        }
+        .full-list-section ol li ul li .correct-indicator {
+            font-weight: bold;
+            color: green;
+            margin-left: 5px;
+        }
+
+        /* Print specifieke stijlen */
+        @media print {
+            body {
+                background-color: #fff;
+                font-size: 10pt;
+            }
+            .container {
+                box-shadow: none;
+                padding: 10mm 10mm;
+                margin: 0;
+            }
+            h1, h2 {
+                page-break-after: avoid;
+            }
+            .search-section {
+                display: none; /* Verberg zoeksectie bij print */
+            }
+            hr {
+                display: none; /* Verberg scheidingslijn bij print */
+            }
+            .full-list-section {
+                margin-top: 0; /* Geen extra marge boven de volledige lijst bij print */
+            }
+            .full-list-section ol li {
+                margin-bottom: 15px;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+                padding-bottom: 10px;
+            }
+            .full-list-section ol li ul li {
+                margin-bottom: 2px;
+                padding-left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Diabetes Quiz Vragen Zoeker</h1>
+
+        <div class="search-section">
+            <label for="question-number-input">Voer vraagnummer in (1-50):</label>
+            <input type="number" id="question-number-input" min="1" max="50" placeholder="Bijv. 15">
+            <button id="search-question-btn">Zoek Vraag</button>
+
+            <div id="specific-question-display">
+                <p>Voer een vraagnummer in en klik op 'Zoek Vraag' om de vraag hier te zien.</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Volledig Vragenoverzicht</h2>
+        <div id="full-questions-list" class="full-list-section">
+            <p>Vragenlijst wordt geladen...</p>
+            <!-- Vragen worden hier door JavaScript ingevoegd -->
+        </div>
+    </div>
+
+    <script>
+        // --- QUIZ DATA (50 Vragen - INHOUD VAN questions.js) ---
+        const quizData = [
+            { question: "Wat is de meest voorkomende vorm van diabetes?", answers: ["Diabetes Type 1", "Diabetes Type 2", "Zwangerschapsdiabetes", "MODY"], correctAnswer: "Diabetes Type 2" },
+            { question: "Welk hormoon reguleert de bloedsuikerspiegel door glucose uit het bloed op te nemen?", answers: ["Glucagon", "Adrenaline", "Insuline", "Cortisol"], correctAnswer: "Insuline" },
+            { question: "Wat is een veelvoorkomend symptoom van onbehandelde diabetes?", answers: ["Gewichtstoename", "Veel dorst en vaak plassen", "Lage bloeddruk", "Energieoverschot"], correctAnswer: "Veel dorst en vaak plassen" },
+            { question: "Wat is de belangrijkste oorzaak van Diabetes Type 1?", answers: ["Ongezonde voeding", "Auto-immuunreactie", "Overgewicht", "Te weinig beweging"], correctAnswer: "Auto-immuunreactie" },
+            { question: "Welke term beschrijft een te lage bloedsuikerspiegel?", answers: ["Hyperglykemie", "Ketoacidose", "Hypoglykemie", "Insulineresistentie"], correctAnswer: "Hypoglykemie" },
+            { question: "Wat is een belangrijke risicofactor voor het ontwikkelen van Diabetes Type 2?", answers: ["Ondergewicht", "Jonge leeftijd", "Overgewicht en weinig beweging", "Blootstelling aan kou"], correctAnswer: "Overgewicht en weinig beweging" },
+            { question: "Welk orgaan produceert insuline?", answers: ["Lever", "Nieren", "Alvleesklier (Pancreas)", "Milt"], correctAnswer: "Alvleesklier (Pancreas)" },
+            { question: "Wat meet de HbA1c-test?", answers: ["De bloedsuiker op één moment", "Het cholesterolgehalte", "De gemiddelde bloedsuiker over de laatste 2-3 maanden", "De nierfunctie"], correctAnswer: "De gemiddelde bloedsuiker over de laatste 2-3 maanden" },
+            { question: "Wat is een mogelijke lange-termijn complicatie van diabetes?", answers: ["Verbeterd zicht", "Snellere wondgenezing", "Nierschade (Nefropathie)", "Verhoogde spiermassa"], correctAnswer: "Nierschade (Nefropathie)" },
+            { question: "Wat is een gezonde gewoonte voor mensen met diabetes?", answers: ["Regelmatig maaltijden overslaan", "Veel suikerhoudende dranken drinken", "Regelmatige lichaamsbeweging", "Een zittende levensstijl"], correctAnswer: "Regelmatige lichaamsbeweging" },
+            { question: "Wat betekent 'insulineresistentie', vaak geassocieerd met Type 2 diabetes?", answers: ["Het lichaam maakt te veel insuline aan.", "Het lichaam reageert niet goed meer op insuline.", "Het lichaam heeft een allergie voor insuline.", "Het lichaam breekt insuline te snel af."], correctAnswer: "Het lichaam reageert niet goed meer op insuline." },
+            { question: "Welk type diabetes ontstaat soms tijdens de zwangerschap?", answers: ["MODY", "LADA", "Diabetes Type 1", "Zwangerschapsdiabetes"], correctAnswer: "Zwangerschapsdiabetes" },
+            { question: "Wat is een 'hypo'?", answers: ["Een te hoge bloedsuiker", "Een aanval van hoofdpijn", "Een te lage bloedsuiker", "Een type insuline"], correctAnswer: "Een te lage bloedsuiker" },
+            { question: "Welke voedingsstof heeft de grootste directe invloed op de bloedsuikerspiegel?", answers: ["Eiwitten", "Vetten", "Koolhydraten", "Vitamines"], correctAnswer: "Koolhydraten" },
+            { question: "Wat is doorgaans géén symptoom van Diabetes Type 1 bij diagnose?", answers: ["Onverklaarbaar gewichtsverlies", "Extreme dorst", "Langzame, geleidelijke gewichtstoename", "Vaak moeten plassen"], correctAnswer: "Langzame, geleidelijke gewichtstoename" },
+            { question: "Welke complicatie van diabetes beïnvloedt de zenuwen, vaak in voeten en handen?", answers: ["Retinopathie", "Nefropathie", "Neuropathie", "Cardiomyopathie"], correctAnswer: "Neuropathie"},
+            { question: "Waarom is regelmatige voetcontrole belangrijk bij diabetes?", answers: ["Om eelt te verwijderen", "Vanwege verminderd gevoel en slechtere wondgenezing", "Omdat voeten sneller groeien", "Om de bloeddruk te meten"], correctAnswer: "Vanwege verminderd gevoel en slechtere wondgenezing"},
+            { question: "Wat is de afkorting voor 'Continuous Glucose Monitoring'?", answers: ["CGM", "BGM", "HbA1c", "DKA"], correctAnswer: "CGM"},
+            { question: "Wat is het doel van het tellen van koolhydraten?", answers: ["Om af te vallen", "Om de insulinedosis beter af te stemmen op de maaltijd", "Om meer eiwitten te eten", "Om vetten te vermijden"], correctAnswer: "Om de insulinedosis beter af te stemmen op de maaltijd"},
+            { question: "Welk type vet wordt over het algemeen aangeraden te beperken?", answers: ["Onverzadigd vet", "Meervoudig onverzadigd vet", "Verzadigd vet en transvet", "Omega-3 vetzuren"], correctAnswer: "Verzadigd vet en transvet"},
+            { question: "Wat kan helpen om de insulinegevoeligheid te verbeteren?", answers: ["Meer suiker eten", "Minder slapen", "Regelmatig bewegen en gewichtsverlies", "Meer zout gebruiken"], correctAnswer: "Regelmatig bewegen en gewichtsverlies"},
+            { question: "Wat is LADA (Latent Autoimmune Diabetes in Adults)?", answers: ["Een snel ontwikkelende vorm van Type 1 bij kinderen", "Een vorm van zwangerschapsdiabetes", "Een langzaam ontwikkelende auto-immuun diabetes bij volwassenen", "Een synoniem voor Type 2 diabetes"], correctAnswer: "Een langzaam ontwikkelende auto-immuun diabetes bij volwassenen"},
+            { question: "Wat moet je direct doen bij een ernstige hypo waarbij iemand bewusteloos is?", answers: ["Insuline injecteren", "Water laten drinken", "Niets in de mond stoppen en 112 bellen (en evt. glucagon toedienen)", "Suiker in de mond wrijven"], correctAnswer: "Niets in de mond stoppen en 112 bellen (en evt. glucagon toedienen)"},
+            { question: "Welke van deze dranken is meestal de beste keuze voor hydratatie bij diabetes?", answers: ["Vruchtensap", "Cola met suiker", "Water of thee zonder suiker", "Energiedrank"], correctAnswer: "Water of thee zonder suiker"},
+            { question: "Wat is het effect van stresshormonen (zoals cortisol) op de bloedsuiker?", answers: ["Ze verlagen de bloedsuiker altijd", "Ze hebben geen effect op de bloedsuiker", "Ze kunnen de bloedsuiker verhogen", "Ze verbeteren de insulinegevoeligheid"], correctAnswer: "Ze kunnen de bloedsuiker verhogen" },
+            { question: "Wat is een kenmerk van MODY (Maturity Onset Diabetes of the Young)?", answers: ["Het is altijd Type 1", "Het wordt veroorzaakt door overgewicht", "Het heeft een sterke erfelijke component (genetische mutatie)", "Het begint altijd na het 50e levensjaar"], correctAnswer: "Het heeft een sterke erfelijke component (genetische mutatie)"},
+            { question: "Wat is een 'hyper'?", answers: ["Een te lage bloedsuiker", "Een allergische reactie", "Een te hoge bloedsuiker", "Een snelle hartslag"], correctAnswer: "Een te hoge bloedsuiker"},
+            { question: "Welke complicatie van diabetes treft de ogen?", answers: ["Neuropathie", "Retinopathie", "Nefropathie", "Gastroparese"], correctAnswer: "Retinopathie"},
+            { question: "Wat is het primaire doel van een insulinepomp?", answers: ["Bloedsuiker meten", "Continu insuline afgeven en bolussen voor maaltijden", "Alleen langwerkende insuline geven", "Koolhydraten tellen"], correctAnswer: "Continu insuline afgeven en bolussen voor maaltijden"},
+            { question: "Is diabetes besmettelijk?", answers: ["Ja, via direct contact", "Ja, via de lucht", "Nee, diabetes is niet besmettelijk", "Alleen Type 1 is besmettelijk"], correctAnswer: "Nee, diabetes is niet besmettelijk"},
+            { question: "Wat is 'prediabetes'?", answers: ["Een garantie dat je Type 2 krijgt", "Een voorstadium waarbij bloedsuikerwaarden verhoogd zijn", "Een andere naam voor Type 1", "Diabetes die vanzelf overgaat"], correctAnswer: "Een voorstadium waarbij bloedsuikerwaarden verhoogd zijn"},
+            { question: "Welk advies geldt meestal voor alcoholgebruik bij diabetes?", answers: ["Onbeperkt drinken is prima", "Alleen sterke drank is toegestaan", "Drink met mate en niet op een lege maag", "Alcohol verlaagt nooit de bloedsuiker"], correctAnswer: "Drink met mate en niet op een lege maag"},
+            { question: "Wat is een belangrijk onderdeel van de behandeling van Type 1 diabetes?", answers: ["Alleen dieet", "Alleen lichaamsbeweging", "Insulinetherapie (injecties of pomp)", "Alleen orale medicatie"], correctAnswer: "Insulinetherapie (injecties of pomp)"},
+            { question: "Welke risicofactor voor Type 2 diabetes kun je NIET beïnvloeden?", answers: ["Gewicht", "Lichaamsbeweging", "Voeding", "Leeftijd en genetische aanleg"], correctAnswer: "Leeftijd en genetische aanleg"},
+            { question: "Wat gebeurt er bij Diabetische Ketoacidose (DKA)?", answers: ["De bloedsuiker wordt extreem laag", "Het lichaam verzuurt door aanmaak van ketonen bij insulinetekort", "De nieren werken te goed", "Er wordt te veel insuline geproduceerd"], correctAnswer: "Het lichaam verzuurt door aanmaak van ketonen bij insulinetekort"},
+            { question: "Welk type product bevat vaak 'verborgen' suikers?", answers: ["Water", "Verse groenten", "Bewerkte voedingsmiddelen zoals sauzen en kant-en-klaarmaaltijden", "Ongezoete noten"], correctAnswer: "Bewerkte voedingsmiddelen zoals sauzen en kant-en-klaarmaaltijden"},
+            { question: "Wat is de glycemische index (GI)?", answers: ["Een maat voor de hoeveelheid calorieën", "Een maat voor hoe snel koolhydraten de bloedsuiker verhogen", "Een maat voor de hoeveelheid vet", "Een maat voor de hoeveelheid eiwit"], correctAnswer: "Een maat voor hoe snel koolhydraten de bloedsuiker verhogen"},
+            { question: "Wat is een kenmerk van vezelrijke voeding?", answers: ["Het verhoogt de bloedsuiker snel", "Het kan helpen de bloedsuiker stabieler te houden", "Het bevat meestal veel verzadigd vet", "Het is alleen te vinden in vlees"], correctAnswer: "Het kan helpen de bloedsuiker stabieler te houden"},
+            { question: "Wat is het risico van roken voor mensen met diabetes?", answers: ["Het verlaagt de bloedsuiker", "Het heeft geen extra risico", "Het verhoogt het risico op hart- en vaatziekten aanzienlijk", "Het verbetert de bloedcirculatie"], correctAnswer: "Het verhoogt het risico op hart- en vaatziekten aanzienlijk"},
+            { question: "Welke professional is gespecialiseerd in voetproblemen bij diabetes?", answers: ["Opticien", "Diëtist", "Podotherapeut", "Psycholoog"], correctAnswer: "Podotherapeut"},
+            { question: "Kan Type 2 diabetes soms in remissie gaan?", answers: ["Nee, nooit", "Ja, soms door significante leefstijlverandering en gewichtsverlies", "Alleen met medicijnen", "Alleen bij kinderen"], correctAnswer: "Ja, soms door significante leefstijlverandering en gewichtsverandering"},
+            { question: "Wat is het belangrijkste verschil tussen Diabetes Mellitus en Diabetes Insipidus?", answers: ["Mellitus betreft bloedsuiker, Insipidus betreft vochtbalans (ADH)", "Insipidus is de Latijnse naam voor Mellitus", "Mellitus is milder dan Insipidus", "Insipidus wordt veroorzaakt door suiker"], correctAnswer: "Mellitus betreft bloedsuiker, Insipidus betreft vochtbalans (ADH)"},
+            { question: "Wat is een mogelijke oorzaak van wazig zien bij diabetes?", answers: ["Te lage bloeddruk", "Veranderingen in vochtbalans in de ooglens door hoge bloedsuiker", "Te veel vitamine A", "Stress"], correctAnswer: "Veranderingen in vochtbalans in de ooglens door hoge bloedsuiker"},
+            { question: "Welke soort insuline werkt het snelst?", answers: ["Langwerkende insuline", "Mix-insuline", "Ultra-kortwerkende insuline", "Intermediair werkende insuline"], correctAnswer: "Ultra-kortwerkende insuline"},
+            { question: "Wat is een 'kunstmatige alvleesklier' of 'closed-loop' systeem?", answers: ["Een orgaantransplantatie", "Een app om koolhydraten te tellen", "Een systeem dat CGM en insulinepomp combineert voor automatische dosering", "Een nieuwe soort orale medicatie"], correctAnswer: "Een systeem dat CGM en insulinepomp combineert voor automatische dosering"},
+            { question: "Welk effect heeft regelmatige krachttraining op diabetesmanagement?", answers: ["Het verhoogt de insulineresistentie", "Het verbetert de insulinegevoeligheid en spiermassa", "Het heeft geen effect", "Het is afgeraden bij diabetes"], correctAnswer: "Het verbetert de insulinegevoeligheid en spiermassa"},
+            { question: "Wat is de functie van glucagon?", answers: ["Het verlaagt de bloedsuiker", "Het verhoogt de bloedsuiker (o.a. door leverglucose vrij te maken)", "Het reguleert de bloeddruk", "Het helpt bij de spijsvertering"], correctAnswer: "Het verhoogt de bloedsuiker (o.a. door leverglucose vrij te maken)"},
+            { question: "Wat is belangrijk bij het reizen met diabetes en insuline?", answers: ["Insuline in de ruimbagage doen", "Geen extra voorraad meenemen", "Insuline in handbagage houden en evt. een medische verklaring meenemen", "Stoppen met meten tijdens de reis"], correctAnswer: "Insuline in handbagage houden en evt. een medische verklaring meenemen"},
+            { question: "Wat is een symptoom van diabetische nefropathie (nierschade) in een later stadium?", answers: ["Gewichtstoename door vocht vasthouden", "Droge huid", "Snelle hartslag", "Helder zicht"], correctAnswer: "Gewichtstoename door vocht vasthouden"},
+            { question: "Wat is een 'bolus' bij insulinetherapie?", answers: ["De continue basale insulineafgifte", "Een extra dosis insuline voor een maaltijd of correctie", "Een meting van de bloedsuiker", "Een type sensor"], correctAnswer: "Een extra dosis insuline voor een maaltijd of correctie"}
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const questionsListDiv = document.getElementById('full-questions-list');
+            const olElement = document.createElement('ol');
+
+            // --- CONTROLE quizData ---
+            if (typeof quizData === 'undefined' || !Array.isArray(quizData) || quizData.length === 0) {
+                questionsListDiv.innerHTML = '<p>Fout: De vragenlijst (quizData) is niet gevonden of is leeg.</p>';
+                return;
+            }
+            // --- EINDE CONTROLE quizData ---
+
+            // Maak de lijst leeg na succesvolle controle
+            questionsListDiv.innerHTML = '';
+
+            quizData.forEach((questionData, index) => {
+                const liElement = document.createElement('li');
+                // Vraagnummer nu direct via JavaScript toegevoegd aan de vraagtekst
+                liElement.innerHTML = `<span class="question-text">Vraag ${index + 1}: ${questionData.question}</span>`;
+
+                const ulAnswers = document.createElement('ul');
+                questionData.answers.forEach((answer, ansIndex) => {
+                    const ansLi = document.createElement('li');
+                    const letter = String.fromCharCode(65 + ansIndex);
+                    ansLi.setAttribute('data-answer-letter', letter);
+                    ansLi.textContent = answer;
+
+                    // Voeg "(Juist)" toe als het het correcte antwoord is
+                    if (answer === questionData.correctAnswer) {
+                        const correctIndicator = document.createElement('span');
+                        correctIndicator.textContent = ' (Juist)';
+                        correctIndicator.classList.add('correct-indicator');
+                        ansLi.appendChild(correctIndicator);
+                    }
+                    ulAnswers.appendChild(ansLi);
+                });
+                liElement.appendChild(ulAnswers);
+                olElement.appendChild(liElement);
+            });
+
+            questionsListDiv.appendChild(olElement);
+
+
+            // --- Zoekfunctionaliteit ---
+            const questionNumberInput = document.getElementById('question-number-input');
+            const searchQuestionBtn = document.getElementById('search-question-btn');
+            const specificQuestionDisplay = document.getElementById('specific-question-display');
+
+            searchQuestionBtn.addEventListener('click', () => {
+                const questionNumber = parseInt(questionNumberInput.value, 10);
+                specificQuestionDisplay.innerHTML = ''; // Clear previous results
+
+                if (isNaN(questionNumber) || questionNumber < 1 || questionNumber > quizData.length) {
+                    specificQuestionDisplay.innerHTML = '<p class="error-message">Voer een geldig vraagnummer in (1-' + quizData.length + ').</p>';
+                    return;
+                }
+
+                const questionData = quizData[questionNumber - 1]; // Array is 0-indexed
+
+                const questionItemDiv = document.createElement('div');
+                questionItemDiv.classList.add('question-item');
+                questionItemDiv.innerHTML = `<span class="question-text">Vraag ${questionNumber}: ${questionData.question}</span>`;
+
+                const ulAnswers = document.createElement('ul');
+                questionData.answers.forEach((answer, ansIndex) => {
+                    const ansLi = document.createElement('li');
+                    const letter = String.fromCharCode(65 + ansIndex);
+                    ansLi.setAttribute('data-answer-letter', letter);
+                    ansLi.textContent = answer;
+
+                    if (answer === questionData.correctAnswer) {
+                        const correctIndicator = document.createElement('span');
+                        correctIndicator.textContent = ' (Juist)';
+                        correctIndicator.classList.add('correct-indicator');
+                        ansLi.appendChild(correctIndicator);
+                    }
+                    ulAnswers.appendChild(ansLi);
+                });
+                questionItemDiv.appendChild(ulAnswers);
+                specificQuestionDisplay.appendChild(questionItemDiv);
+            });
+        });
+    </script>
+
+</body>
+</html>
